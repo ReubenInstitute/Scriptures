@@ -1,6 +1,7 @@
-"זְרָעִים", "Zeraim"
-"מוֹעֵד", "Moed"
-"נָשִׁים", "Nashim"
-"נְזִיקִין", "Nezikin"
-"קָדָשִׁים", "Kodashim"
-"טְהָרוֹת", "Tohorot"
+latin_name,hebrew_name,hebrew_fullspell_name
+Zeraim,זְרָעִים,זרעים
+Moed,מוֹעֵד,מועד
+Nashim,נָשִׁים,נשים
+Nezikin,נְזִיקִין,נזיקין
+Kodashim,קָדָשִׁים,קדשים
+Tohorot,טֳהָרוֹת,טהרות

@@ -1,0 +1,40 @@
+number,slug,latin_name,english_name,hebrew_name
+1,bereshit,Genesis,Bereshit,בְּרֵאשִׁית
+2,shemot,Exodus,Shemot,שֵׁמוֹת
+3,vayikra,Leviticus,Vayikra,וַיִּקְרָא
+4,bamidbar,Numbers,Bamidbar,בַּמִּדְבָּר
+5,devarim,Deuteronomy,Devarim,דְּבָרִים
+6,yehoshua,Joshua,Yehoshua,יְהוֹשֻׁעַ
+7,shoftim,Judges,Shoftim,שֹׁופְטִים
+8,shmuel-alef,I Samuel,Shmuel Alef,שְׁמוּאֵל א
+9,shmuel-bet,II Samuel,Shmuel Bet,שְׁמוּאֵל ב
+10,melachim-alef,I Kings,Melachim Alef,מְלָכִים א
+11,melachim-bet,II Kings,Melachim Bet,מְלָכִים ב
+12,yeshayahu,Isaiah,Yeshayahu,יְשַׁעְיָהוּ
+13,yirmiyahu,Jeremiah,Yirmiyahu,יִרְמְיָהוּ
+14,yehezkiel,Ezekiel,Yehezkiel,יְחֶזְקֵאל
+15,hoshea,Hosea,Hoshea,הוֹשֵׁעַ
+16,yoel,Joel,Yoel,יוֹאֵל
+17,amos,Amos,Amos,עָמוֹס
+18,ovadiah,Obadiah,Ovadiah,עֹבַדְיָה
+19,yonah,Jonah,Yonah,יוֹנָה
+20,mikha,Micah,Mikha,מִיכָה
+21,nahum,Nahum,Nahum,נַחוּם
+22,habakuk,Habakkuk,Habakuk,חַבַּקּוּק
+23,tzefaniah,Zephaniah,Tzefaniah,צְפַנְיָה
+24,chaggai,Haggai,Chaggai,חַגַּי
+25,zekhariah,Zechariah,Zekhariah,זְכַרְיָה
+26,malakhi,Malachi,Malakhi,מַלְאָכִי
+27,tehillim,Psalms,Tehillim,תְּהִלִּים
+28,mishlei,Proverbs,Mishlei,מִשְׁלֵי
+29,iyov,Job,Iyov,אִיּוֹב
+30,shir-hashirim,Song of Songs,Shir Hashirim,שִׁיר הַשִׁירִים
+31,rut,Ruth,Rut,רוּת
+32,eikhah,Lamentations,Eikhah,אֵיכָה
+33,kohelet,Ecclesiastes,Kohelet,קֹהֶלֶת
+34,esther,Esther,Esther,אֶסְתֵּר
+35,daniyel,Daniel,Daniyel,דָּנִיֵּאל
+36,ezra,Ezra,Ezra,עֶזְרָא
+37,nechemyah,Nehemiah,Nechemyah,נְחֶמְיָה
+38,divrey-hayiamim-aleph,I Chronicles,Divrey Hayiamim Aleph,דִּבְרֵי הַיָּמִים א
+39,divrey-hayiamim-bet,II Chronicles,Divrey Hayiamim Bet,דִּבְרֵי הַיָּמִים ב
