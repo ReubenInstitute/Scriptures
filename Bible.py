@@ -1,6 +1,6 @@
+import csv
 import json
 from pathlib import Path
-import pandas as pd
 import Hebrew
 import HebrewNumbers
 
@@ -184,11 +184,12 @@ class Bible:
 	def __init__(self):
 		with open(BIBLE_JSON, 'r', encoding='utf-8') as f:
 			self.data = json.load(f)
-		metadata = pd.read_csv(BOOKS_CSV)
+		with open(BOOKS_CSV, newline='', encoding='utf-8') as f:
+			metadata = list(csv.DictReader(f))
 		self.books_metadata = []
 		for i in range(len(self.data)):
 			if i < len(metadata):
-				self.books_metadata.append(metadata.iloc[i])
+				self.books_metadata.append(metadata[i])
 
 	@property
 	def slugs(self):
