@@ -1,5 +1,6 @@
 import csv
 import json
+import re
 from pathlib import Path
 import Hebrew
 import HebrewNumbers
@@ -17,7 +18,9 @@ class Verse:
 
 	@property
 	def words(self):
-		return [line.split(' ') for line in self.lines]
+		# a word joined with a maqaf is two spoken words, the maqaf stays on the first
+		return [[part for word in line.split(' ') for part in re.split('(?<=%s)' % Hebrew.MAQAF, word) if part]
+			for line in self.lines]
 
 	@property
 	def lines(self):
