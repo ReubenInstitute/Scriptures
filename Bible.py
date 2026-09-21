@@ -133,12 +133,12 @@ class Book:
 		self.number = number
 
 	@property
-	def hebrew_name(self):
+	def hebrew_full_name(self):
 		return self.metadata['hebrew_name']
 
 	@property
-	def hebrew_bare_name(self):
-		return Hebrew.strip_diacritics(self.hebrew_name)
+	def hebrew_name(self):
+		return Hebrew.strip_diacritics(self.hebrew_full_name)
 
 	@property
 	def latin_name(self):
