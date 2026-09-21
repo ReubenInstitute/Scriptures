@@ -18,8 +18,11 @@ class Verse:
 
 	@property
 	def words(self):
-		# a word joined with a maqaf is two spoken words, the maqaf stays on the first
-		return [[part for word in line.split(' ') for part in re.split('(?<=%s)' % Hebrew.MAQAF, word) if part]
+		# a word joined with a maqaf is two spoken words; what sits between two words is the spacer,
+		# a space or a maqaf
+		separators = ' ' + Hebrew.MAQAF
+		return [[(word, Hebrew.MAQAF if Hebrew.MAQAF in spacer else ' ')
+				for word, spacer in re.findall('([^%s]+)([%s]*)' % (separators, separators), line)]
 			for line in self.lines]
 
 	@property
