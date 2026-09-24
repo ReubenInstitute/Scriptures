@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import json
 import pandas as pd
 from pathlib import Path
@@ -7,10 +8,18 @@ import time
 import re
 import html
 import unicodedata
+import argparse
+import shutil
+import sys
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+CSV_DIR = SCRIPT_DIR / "csv"
+SYSTEM_OUTPUT_DIR = Path("/usr/share/scriptures")
+CACHE_DIR = Path.home() / ".scriptures" / "cache"
 
 class Source:
-	CACHE_DIR = Path("json-cache")
-	OUTPUT_DIR = Path("json")
+	CACHE_DIR = CACHE_DIR
+	OUTPUT_DIR = None
 	URL_FUCKUPS = {
 		"https://www.sefaria.org.il/download/version/Mishnah%20Avot%20-%20he%20-%20Mishnah,%20ed.%20Romm,%20Vilna%201913.json":
 			"https://www.sefaria.org.il/download/version/Pirkei%20Avot%20-%20he%20-%20Mishnah,%20ed.%20Romm,%20Vilna%201913.json",
@@ -28,10 +37,10 @@ class Source:
 
 	@classmethod
 	def download(cls):
-		cls.CACHE_DIR.mkdir(exist_ok=True)
+		cls.CACHE_DIR.mkdir(parents=True, exist_ok=True)
 		print("📁 Checking for missing source files...")
-		books_df = pd.read_csv("csv/books.csv")
-		tractates_df = pd.read_csv("csv/tractates.csv")
+		books_df = pd.read_csv(CSV_DIR / "books.csv")
+		tractates_df = pd.read_csv(CSV_DIR / "tractates.csv")
 		missing_files = []
 		bible_template = "https://www.sefaria.org.il/download/version/{NAME}%20-%20he%20-%20Miqra%20according%20to%20the%20Masorah.json"
 		for _, row in books_df.iterrows():
@@ -103,7 +112,7 @@ class Source:
 	@classmethod
 	def build(cls):
 		cls.download()
-		cls.OUTPUT_DIR.mkdir(exist_ok=True)
+		cls.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 		print("\n" + "=" * 40)
 		print("🔄 CONVERTING ALL TEXTS")
 		print("=" * 40)
@@ -122,7 +131,7 @@ class Source:
 	@classmethod
 	def build_bible(cls):
 		print("📖 Converting Bible...")
-		books_df = pd.read_csv("csv/books.csv")
+		books_df = pd.read_csv(CSV_DIR / "books.csv")
 		bible_data = []
 		for _, row in books_df.iterrows():
 			filename = cls.CACHE_DIR / f"bible_{row['latin_name'].lower().replace(' ', '_')}.json"
@@ -149,7 +158,7 @@ class Source:
 	@classmethod
 	def build_mishnah(cls):
 		print("📖 Converting Mishnah...")
-		tractates_df = pd.read_csv("csv/tractates.csv")
+		tractates_df = pd.read_csv(CSV_DIR / "tractates.csv")
 		mishnah_data = []
 		for _, row in tractates_df.iterrows():
 			filename = cls.CACHE_DIR / f"mishnah_{row['english_name'].lower().replace(' ', '_')}.json"
@@ -168,7 +177,7 @@ class Source:
 	@classmethod
 	def build_bavli(cls):
 		print("📖 Converting Talmud Bavli (page-based)...")
-		tractates_df = pd.read_csv("csv/tractates.csv")
+		tractates_df = pd.read_csv(CSV_DIR / "tractates.csv")
 		bavli_data = []
 		for _, row in tractates_df.iterrows():
 			filename = cls.CACHE_DIR / f"bavli_{row['english_name'].lower().replace(' ', '_')}.json"
@@ -195,7 +204,7 @@ class Source:
 	@classmethod
 	def build_yerushalmi(cls):
 		print("📖 Converting Talmud Yerushalmi (chapter-based)...")
-		tractates_df = pd.read_csv("csv/tractates.csv")
+		tractates_df = pd.read_csv(CSV_DIR / "tractates.csv")
 		yerushalmi_data = []
 		for _, row in tractates_df.iterrows():
 			filename = cls.CACHE_DIR / f"yerushalmi_{row['english_name'].lower().replace(' ', '_')}.json"
@@ -291,22 +300,22 @@ class Source:
 	@classmethod
 	def verify(cls):
 		print("\n🔍 Verifying conversions...")
-		books_df = pd.read_csv("csv/books.csv")
+		books_df = pd.read_csv(CSV_DIR / "books.csv")
 		with open(cls.OUTPUT_DIR / 'bible.json', 'r', encoding='utf-8') as f:
 			bible_data = json.load(f)
 		assert len(bible_data) == len(books_df), f"Bible book count mismatch: {len(bible_data)} vs {len(books_df)}"
 		print("✅ Bible books verified")
-		tractates_df = pd.read_csv("csv/tractates.csv")
+		tractates_df = pd.read_csv(CSV_DIR / "tractates.csv")
 		with open(cls.OUTPUT_DIR / 'mishnah.json', 'r', encoding='utf-8') as f:
 			mishnah_data = json.load(f)
 		assert len(mishnah_data) == len(tractates_df), f"Mishnah tractate count mismatch"
 		print("✅ Mishnah tractates verified")
-		zohar_chapters_df = pd.read_csv("csv/zohar-chapters.csv")
+		zohar_chapters_df = pd.read_csv(CSV_DIR / "zohar-chapters.csv")
 		with open(cls.OUTPUT_DIR / 'zohar.json', 'r', encoding='utf-8') as f:
 			zohar_data = json.load(f)
 		assert len(zohar_data) == len(zohar_chapters_df), f"Zohar section count mismatch"
 		print("✅ Zohar sections verified")
-		zohar_chadash_chapters_df = pd.read_csv("csv/zohar-chadash-chapters.csv")
+		zohar_chadash_chapters_df = pd.read_csv(CSV_DIR / "zohar-chadash-chapters.csv")
 		with open(cls.OUTPUT_DIR / 'zohar-chadash.json', 'r', encoding='utf-8') as f:
 			zohar_chadash_data = json.load(f)
 		assert len(zohar_chadash_data) == len(zohar_chadash_chapters_df), f"Zohar Chadash section count mismatch"
@@ -361,5 +370,28 @@ class Source:
 		text = re.sub(r'<[^>]+>', '', text)
 		return text
 
+def main():
+	parser = argparse.ArgumentParser(
+		description="Build the Scriptures JSON database from Sefaria sources.")
+	parser.add_argument("folder", nargs="?", type=Path, help="output folder")
+	parser.add_argument("--system", action="store_true",
+		help=f"write to {SYSTEM_OUTPUT_DIR} instead of a folder")
+	parser.add_argument("--clear-cache", action="store_true",
+		help=f"delete {CACHE_DIR} and exit")
+	args = parser.parse_args()
+
+	if args.clear_cache:
+		if args.folder or args.system:
+			parser.error("--clear-cache cannot be combined with a folder or --system")
+		shutil.rmtree(CACHE_DIR, ignore_errors=True)
+		print(f"🗑️  Removed {CACHE_DIR}")
+		return
+
+	if bool(args.folder) == bool(args.system):
+		parser.error("specify a folder or --system, not both/neither")
+
+	Source.OUTPUT_DIR = SYSTEM_OUTPUT_DIR if args.system else args.folder
+	Source.build()
+
 if __name__ == "__main__":
-    Source.build()
+	main()
