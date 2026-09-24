@@ -5,10 +5,10 @@ from pathlib import Path
 import Hebrew
 import HebrewNumbers
 
-ROOT = Path(__file__).parent
+DATA_DIR = Path("/usr/share/scriptures")
 
-BIBLE_JSON = ROOT / "json" / "bible.json"
-BOOKS_CSV = ROOT / "csv" / "books.csv"
+BIBLE_JSON = DATA_DIR / "bible.json"
+BOOKS_CSV = DATA_DIR / "csv" / "books.csv"
 
 class Verse:
 	def __init__(self, chapter, number):

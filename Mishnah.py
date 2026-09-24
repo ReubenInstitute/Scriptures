@@ -4,11 +4,11 @@ import HebrewNumbers
 import Hebrew
 from pathlib import Path
 
-ROOT = Path(__file__).parent
+DATA_DIR = Path("/usr/share/scriptures")
 
-MISHNAH_JSON = "json/mishnah.json"
-TRACTATES_CSV = "csv/tractates.csv"
-ORDERS_CSV = "csv/orders.csv"
+MISHNAH_JSON = DATA_DIR / "mishnah.json"
+TRACTATES_CSV = DATA_DIR / "csv" / "tractates.csv"
+ORDERS_CSV = DATA_DIR / "csv" / "orders.csv"
 
 class Order:
 	def __init__(self, mishnah, number, **metadata):

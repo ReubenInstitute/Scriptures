@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Scriptures"
+version = "0.13"
+description = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar); reads text from /usr/share/scriptures"
+readme = { text = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar). Requires the scriptures-data files at /usr/share/scriptures.", content-type = "text/plain" }
+requires-python = ">=3.8"
+dependencies = [
+    "Hebrew",
+    "pandas",
+]
+
+[tool.setuptools]
+py-modules = ["Scriptures", "Bible", "Mishnah", "TalmudBavli", "TalmudYerushalmi", "Zohar", "ZoharChadash", "ZoharTikkunim"]

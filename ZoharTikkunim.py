@@ -2,9 +2,9 @@ import json
 import HebrewNumbers
 from pathlib import Path
 
-ROOT = Path(__file__).parent
+DATA_DIR = Path("/usr/share/scriptures")
 
-ZOHAR_TIKKUNIM_JSON = "json/zohar-tikkunim.json"
+ZOHAR_TIKKUNIM_JSON = DATA_DIR / "zohar-tikkunim.json"
 
 class Verse:
 	def __init__(self, chapter, number):

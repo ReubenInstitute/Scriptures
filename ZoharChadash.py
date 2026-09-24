@@ -3,10 +3,10 @@ import pandas as pd
 import HebrewNumbers
 from pathlib import Path
 
-ROOT = Path(__file__).parent
+DATA_DIR = Path("/usr/share/scriptures")
 
-ZOHAR_CHADASH_JSON = "json/zohar-chadash.json"
-CHAPTERS_CSV = "csv/zohar-chadash-chapters.csv"
+ZOHAR_CHADASH_JSON = DATA_DIR / "zohar-chadash.json"
+CHAPTERS_CSV = DATA_DIR / "csv" / "zohar-chadash-chapters.csv"
 
 class Verse:
 	def __init__(self, chapter, number):

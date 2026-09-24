@@ -4,10 +4,10 @@ import HebrewNumbers
 import Hebrew
 from pathlib import Path
 
-ROOT = Path(__file__).parent
+DATA_DIR = Path("/usr/share/scriptures")
 
-BAVLI_JSON = "json/bavli.json"
-TRACTATES_CSV = "csv/tractates.csv"
+BAVLI_JSON = DATA_DIR / "bavli.json"
+TRACTATES_CSV = DATA_DIR / "csv" / "tractates.csv"
 
 class Verse:
 	def __init__(self, page, number):
