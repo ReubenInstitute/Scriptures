@@ -13,11 +13,14 @@ sed -i "s/^version = .*/version = \"$VERSION\"/" pyproject.toml
 # --- python3-scriptures (code) ---
 CODE_DIR="$REPO_ROOT/debian-pkg-scriptures"
 rm -rf "$CODE_DIR"
-mkdir -p "$CODE_DIR/DEBIAN" "$CODE_DIR/usr/lib/python3/dist-packages"
+mkdir -p "$CODE_DIR/DEBIAN" "$CODE_DIR/usr/lib/python3/dist-packages" "$CODE_DIR/usr/share/scriptures" "$CODE_DIR/usr/bin"
 cp packaging/deb/control-scriptures "$CODE_DIR/DEBIAN/control"
 cp Scriptures.py Bible.py Mishnah.py TalmudBavli.py TalmudYerushalmi.py \
    Zohar.py ZoharChadash.py ZoharTikkunim.py \
    "$CODE_DIR/usr/lib/python3/dist-packages/"
+cp scriptures-web.py "$CODE_DIR/usr/share/scriptures/scriptures-web.py"
+chmod +x "$CODE_DIR/usr/share/scriptures/scriptures-web.py"
+ln -s ../share/scriptures/scriptures-web.py "$CODE_DIR/usr/bin/scriptures-web"
 dpkg-deb --build --root-owner-group "$CODE_DIR" "python3-scriptures_${VERSION}_all.deb"
 rm -rf "$CODE_DIR"
 echo "Built python3-scriptures_${VERSION}_all.deb"
