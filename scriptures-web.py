@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from flask import Flask, send_file
 from jinja2 import Template
 from Scriptures import Scriptures
