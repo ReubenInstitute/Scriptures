@@ -338,8 +338,8 @@ def serve_file(filename):
 
 if __name__ == '__main__':
 	import argparse
-	parser = argparse.ArgumentParser(description="Reuben Institute scriptures web viewer")
-	parser.add_argument('--host', default='127.0.0.1', help="interface to bind (default: 127.0.0.1)")
-	parser.add_argument('--port', type=int, default=5000, help="port to bind (default: 5000)")
+	parser = argparse.ArgumentParser(description="Reuben Institute scriptures web viewer (dev server, always debug)")
+	parser.add_argument('host', nargs='?', default='127.0.0.1', help="interface to bind (default: 127.0.0.1)")
+	parser.add_argument('port', nargs='?', type=int, default=5000, help="port to bind (default: 5000)")
 	args = parser.parse_args()
 	app.run(host=args.host, port=args.port, debug=True)
