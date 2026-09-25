@@ -3,7 +3,7 @@ Version: 0.15
 Section: python
 Priority: optional
 Architecture: all
-Depends: python3, python3-pandas, python3-hebrew, python3-flask, scriptures-data, fonts
+Depends: python3, python3-pandas, python3-hebrew, scriptures-data
 Maintainer: Reuben Institute <robert.wallner.edward@gmail.com>
 Description: Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar)
  Provides Scriptures, Bible, Mishnah, TalmudBavli, TalmudYerushalmi,
