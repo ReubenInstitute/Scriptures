@@ -7,6 +7,7 @@ name = "Scriptures"
 version = "0.21"
 description = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar) for Reuben Institute's Hebrew text corpus, with a bundled web viewer available separately"
 readme = { text = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar) for Reuben Institute's Hebrew text corpus, with a bundled web viewer available separately.", content-type = "text/plain" }
+license = { text = "GPL-3.0-or-later" }
 requires-python = ">=3.8"
 dependencies = [
     "Hebrew",
