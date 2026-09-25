@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Scriptures"
-version = "0.18"
-description = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar); reads text from /usr/share/scriptures"
-readme = { text = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar). Requires the scriptures-data files at /usr/share/scriptures.", content-type = "text/plain" }
+version = "0.21"
+description = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar) for Reuben Institute's Hebrew text corpus, with a bundled web viewer available separately"
+readme = { text = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar) for Reuben Institute's Hebrew text corpus, with a bundled web viewer available separately.", content-type = "text/plain" }
 requires-python = ">=3.8"
 dependencies = [
     "Hebrew",
