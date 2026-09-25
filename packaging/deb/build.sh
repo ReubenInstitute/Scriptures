@@ -14,11 +14,13 @@ sed -i "s/^version = .*/version = \"$VERSION\"/" pyproject.toml
 # --- python3-scriptures (code) ---
 CODE_DIR="$REPO_ROOT/debian-pkg-scriptures"
 rm -rf "$CODE_DIR"
-mkdir -p "$CODE_DIR/DEBIAN" "$CODE_DIR/usr/lib/python3/dist-packages"
+mkdir -p "$CODE_DIR/DEBIAN" "$CODE_DIR/usr/lib/python3/dist-packages" \
+	"$CODE_DIR/usr/share/doc/python3-scriptures"
 cp packaging/deb/control-scriptures "$CODE_DIR/DEBIAN/control"
 cp Scriptures.py Bible.py Mishnah.py TalmudBavli.py TalmudYerushalmi.py \
    Zohar.py ZoharChadash.py ZoharTikkunim.py \
    "$CODE_DIR/usr/lib/python3/dist-packages/"
+cp GPL-3 "$CODE_DIR/usr/share/doc/python3-scriptures/copyright"
 dpkg-deb --build --root-owner-group "$CODE_DIR" "python3-scriptures_${VERSION}_all.deb"
 rm -rf "$CODE_DIR"
 echo "Built python3-scriptures_${VERSION}_all.deb"
@@ -26,11 +28,13 @@ echo "Built python3-scriptures_${VERSION}_all.deb"
 # --- scriptures-web (Flask app) ---
 WEB_DIR="$REPO_ROOT/debian-pkg-scriptures-web"
 rm -rf "$WEB_DIR"
-mkdir -p "$WEB_DIR/DEBIAN" "$WEB_DIR/usr/share/scriptures" "$WEB_DIR/usr/bin"
+mkdir -p "$WEB_DIR/DEBIAN" "$WEB_DIR/usr/share/scriptures" "$WEB_DIR/usr/bin" \
+	"$WEB_DIR/usr/share/doc/scriptures-web"
 cp packaging/deb/control-scriptures-web "$WEB_DIR/DEBIAN/control"
 cp scriptures-web.py "$WEB_DIR/usr/share/scriptures/scriptures-web.py"
 chmod +x "$WEB_DIR/usr/share/scriptures/scriptures-web.py"
 ln -s ../share/scriptures/scriptures-web.py "$WEB_DIR/usr/bin/scriptures-web"
+cp GPL-3 "$WEB_DIR/usr/share/doc/scriptures-web/copyright"
 dpkg-deb --build --root-owner-group "$WEB_DIR" "scriptures-web_${VERSION}_all.deb"
 rm -rf "$WEB_DIR"
 echo "Built scriptures-web_${VERSION}_all.deb"
