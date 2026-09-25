@@ -321,6 +321,13 @@ def tikkunei_zohar_chapter(chapter):
 	""", chapter=chapter)
 	return render(h, [('תיקוני זוהר', '/tikkunei-zohar')])
 
+@app.route('/fonts/<path:filename>')
+def serve_font(filename):
+	try:
+		return send_file(f"/usr/share/fonts/reubeninstitute/{filename}")
+	except FileNotFoundError:
+		return "File not found", 404
+
 @app.route('/<path:filename>')
 def serve_file(filename):
 	try:
