@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Scriptures"
-version = "0.25"
+version = "0.29"
 description = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar) for Reuben Institute's Hebrew text corpus, with a bundled web viewer available separately"
 readme = { text = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar) for Reuben Institute's Hebrew text corpus, with a bundled web viewer available separately.", content-type = "text/plain" }
 license = "GPL-3.0-or-later"

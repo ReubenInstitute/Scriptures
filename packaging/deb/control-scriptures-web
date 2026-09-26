@@ -1,9 +1,0 @@
-Package: scriptures-web
-Version: 0.25
-Section: python
-Priority: optional
-Architecture: all
-Depends: python3, python3-flask, python3-scriptures, fonts
-Maintainer: Reuben Institute <reubeninstitute@gmail.com>
-Description: Web viewer for Reuben Institute's scripture corpus
- Flask app serving the Hebrew scripture texts in the browser.

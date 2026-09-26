@@ -1,0 +1,27 @@
+Source: scriptures
+Section: python
+Priority: optional
+Maintainer: Reuben Institute <reubeninstitute@gmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+
+Package: python3-scriptures
+Architecture: all
+Depends: ${misc:Depends}, python3, python3-pandas, python3-hebrew, scriptures-data
+Description: Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar)
+ Provides Scriptures, Bible, Mishnah, TalmudBavli, TalmudYerushalmi,
+ Zohar, ZoharChadash and ZoharTikkunim classes for Reuben Institute's
+ Hebrew text corpus, with a bundled web viewer available separately.
+
+Package: scriptures-data
+Architecture: all
+Depends: ${misc:Depends}, python3
+Description: Hebrew scripture text data (Bible, Mishnah, Talmud, Zohar)
+ Provides the JSON text database for Reuben Institute's Hebrew text
+ corpus, sourced from Sefaria (https://sefaria.org).
+
+Package: scriptures-web
+Architecture: all
+Depends: ${misc:Depends}, python3, python3-flask, python3-scriptures, fonts
+Description: Web viewer for Reuben Institute's scripture corpus
+ Flask app serving the Hebrew scripture texts in the browser.
