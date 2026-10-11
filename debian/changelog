@@ -1,4 +1,4 @@
-scriptures (0.29) unstable; urgency=medium
+scriptures (0.30) unstable; urgency=medium
 
   * Switch packaging from packaging/deb/ (dpkg-deb --build) to a proper
     debian/ source package (dpkg-buildpackage) building all three

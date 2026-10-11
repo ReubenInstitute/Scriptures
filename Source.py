@@ -13,7 +13,7 @@ import shutil
 import sys
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-CSV_DIR = SCRIPT_DIR / "csv"
+CSV_DIR = SCRIPT_DIR / "scriptures" / "csv"
 SYSTEM_OUTPUT_DIR = Path("/usr/share/scriptures")
 CACHE_DIR = Path.home() / ".scriptures" / "cache"
 

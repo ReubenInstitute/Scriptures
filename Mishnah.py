@@ -4,9 +4,9 @@ import HebrewNumbers
 import Hebrew
 from pathlib import Path
 
-DATA_DIR = Path("/usr/share/scriptures")
+DATA_DIR = Path(__file__).resolve().parent / "scriptures"
 
-MISHNAH_JSON = DATA_DIR / "mishnah.json"
+MISHNAH_JSON = DATA_DIR / "json" / "mishnah.json"
 TRACTATES_CSV = DATA_DIR / "csv" / "tractates.csv"
 ORDERS_CSV = DATA_DIR / "csv" / "orders.csv"
 

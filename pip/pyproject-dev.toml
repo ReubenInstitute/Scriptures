@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scriptures-dev"
+version = "0.30"
+description = "Build the Scriptures JSON database from Sefaria sources"
+readme = { text = "Fetches and regenerates the Hebrew scripture text database that scriptures bundles, sourced from Sefaria (https://sefaria.org).", content-type = "text/plain" }
+license = "GPL-3.0-or-later"
+license-files = ["GPL-3"]
+requires-python = ">=3.8"
+dependencies = [
+    "scriptures",
+    "pandas",
+    "requests",
+]
+
+[tool.setuptools]
+py-modules = ["Source"]

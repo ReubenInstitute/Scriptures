@@ -8,10 +8,10 @@ set -eu
 cd "$(dirname "$0")/.."
 
 COUNT="$(($(git rev-list --count HEAD) + 1))"
-MAJOR="$(grep '^version' pyproject.toml | sed -E 's/version = "([0-9]+)\..*/\1/')"
+MAJOR="$(grep '^version' pip/pyproject-base.toml | sed -E 's/version = "([0-9]+)\..*/\1/')"
 VERSION="$MAJOR.$COUNT"
 
-sed -i "s/^version = .*/version = \"$VERSION\"/" pyproject.toml
+sed -i "s/^version = .*/version = \"$VERSION\"/" pip/pyproject-base.toml pip/pyproject-web.toml pip/pyproject-dev.toml
 sed -i "1s/^scriptures (.*)/scriptures ($VERSION)/" debian/changelog
 
 echo "Bumped to $VERSION"
