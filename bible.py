@@ -2,15 +2,14 @@ import csv
 import json
 import re
 from pathlib import Path
-import Hebrew
-import HebrewNumbers
+import hebrew
 
-DATA_DIR = Path(__file__).resolve().parent / "scriptures"
+DATA_DIR = Path(__file__).resolve().parent
 
 BIBLE_JSON = DATA_DIR / "json" / "bible.json"
 BOOKS_CSV = DATA_DIR / "csv" / "books.csv"
 
-class Verse:
+class BibleVerse:
 	def __init__(self, chapter, number):
 		self.chapter = chapter
 		self.number = number
@@ -20,8 +19,8 @@ class Verse:
 	def words(self):
 		# a word joined with a maqaf is two spoken words; what sits between two words is the spacer,
 		# a space or a maqaf
-		separators = ' ' + Hebrew.MAQAF
-		return [[(word, Hebrew.MAQAF if Hebrew.MAQAF in spacer else ' ')
+		separators = ' ' + hebrew.MAQAF
+		return [[(word, hebrew.MAQAF if hebrew.MAQAF in spacer else ' ')
 				for word, spacer in re.findall('([^%s]+)([%s]*)' % (separators, separators), line)]
 			for line in self.lines]
 
@@ -41,7 +40,7 @@ class Verse:
 
 	@property
 	def raw_words(self):
-		words = Hebrew.raw_text(self.orig_text)
+		words = hebrew.raw_text(self.orig_text)
 		words = words.split(' ')
 		return words
 
@@ -63,27 +62,27 @@ class Verse:
 
 	@property
 	def bare_text(self):
-		c = Hebrew.strip_cantillation(self.orig_text)
-		c = Hebrew.strip_hebrew_punctuation(c)
-		c = Hebrew.strip_diacritics(c)
-		c = Hebrew.strip_punctuation(c)
+		c = hebrew.strip_cantillation(self.orig_text)
+		c = hebrew.strip_hebrew_punctuation(c)
+		c = hebrew.strip_diacritics(c)
+		c = hebrew.strip_punctuation(c)
 		return c
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Verse({self.chapter.book.number}:{self.chapter.number}:{self.number})"
+		return f"BibleVerse({self.chapter.book.number}:{self.chapter.number}:{self.number})"
 
 
 
 
-class Chapter:
+class BibleChapter:
 	def __init__(self, book, number):
 		self.book = book
 		self.number = number
@@ -105,7 +104,7 @@ class Chapter:
 
 	@property
 	def verses(self):
-		return [Verse(self, i + 1) for i in range(len(self.data))]
+		return [BibleVerse(self, i + 1) for i in range(len(self.data))]
 
 	@property
 	def data(self):
@@ -113,11 +112,11 @@ class Chapter:
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	@property
 	def num_words(self):
@@ -128,9 +127,9 @@ class Chapter:
 		return sum([v.num_letters for v in self.verses])
 
 	def __repr__(self):
-		return f"Chapter({self.book.number}:{self.number})"
+		return f"BibleChapter({self.book.number}:{self.number})"
 
-class Book:
+class BibleBook:
 	def __init__(self, bible, number):
 		self.bible = bible
 		self.number = number
@@ -141,7 +140,7 @@ class Book:
 
 	@property
 	def hebrew_name(self):
-		return Hebrew.strip_diacritics(self.hebrew_full_name)
+		return hebrew.strip_diacritics(self.hebrew_full_name)
 
 	@property
 	def latin_name(self):
@@ -157,7 +156,7 @@ class Book:
 
 	@property
 	def chapters(self):
-		return [Chapter(self, i + 1) for i in range(len(self.data))]
+		return [BibleChapter(self, i + 1) for i in range(len(self.data))]
 
 	@property
 	def data(self):
@@ -179,7 +178,7 @@ class Book:
 		return colors[self.number - 1] if 1 <= self.number <= 5 else (128, 128, 128)
 
 	def __repr__(self):
-		return f"Book({self.number})"
+		return f"BibleBook({self.number})"
 
 	@property
 	def is_megillah(self):
@@ -203,7 +202,7 @@ class Bible:
 
 	@property
 	def books(self):
-		return [Book(self, i + 1) for i in range(len(self.data))]
+		return [BibleBook(self, i + 1) for i in range(len(self.data))]
 
 	def __getitem__(self, slug):
 		idx = self.slugs.get(slug)

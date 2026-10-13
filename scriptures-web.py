@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 from flask import Flask, send_file
 from jinja2 import Template
-from Scriptures import Scriptures
+from scriptures import Scriptures
+from reubeninstitute.Paths import CSS_FOLDER, FONT_FOLDER
 
 app = Flask(__name__)
 s = Scriptures()
@@ -15,7 +16,7 @@ HTML = Template("""
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Scriptures</title>
-	<link rel="stylesheet" href="/styles.css">
+	<link rel="stylesheet" href="/@@/styles.css">
 </head>
 <body>
 	{{content}}
@@ -25,7 +26,6 @@ HTML = Template("""
 		{% endfor %}
 		<a href="/">ראשי</a>
 	</section>
-	<script type="module" src="/script.js"></script>
 </body>
 </html>
 """)
@@ -86,7 +86,7 @@ def bible_chapter(book, chapter):
 	<h1>{{book.hebrew_name}} - פרק {{chapter.hebrew_fancy_number}}</h1>
 	<section class='scriptures'>
 		{% for verse in chapter.verses %}
-		<div class="verse"><span class="verse-number">{{verse.hebrew_number}}</span> {{verse.text}}</div>
+		<span class="verse"><span class="verse-number">{{verse.hebrew_number}}</span> {{verse.text}}</span>
 		{% endfor %}
 	</section>
 	""", book=book, chapter=chapter)
@@ -322,12 +322,13 @@ def tikkunei_zohar_chapter(chapter):
 	""", chapter=chapter)
 	return render(h, [('תיקוני זוהר', '/tikkunei-zohar')])
 
-@app.route('/fonts/<path:filename>')
+@app.route('/@@/<path:filename>')
 def serve_font(filename):
-	try:
-		return send_file(f"/usr/share/fonts/reubeninstitute/{filename}")
-	except FileNotFoundError:
-		return "File not found", 404
+	return send_file(f"{FONT_FOLDER}/{filename}")
+
+@app.route('/@@/styles.css')
+def serve_styles():
+	return send_file(f"{CSS_FOLDER}/styles.css")
 
 @app.route('/<path:filename>')
 def serve_file(filename):

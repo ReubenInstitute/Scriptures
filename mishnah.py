@@ -1,16 +1,15 @@
 import json
-import pandas as pd
-import HebrewNumbers
-import Hebrew
+import csv
+import hebrew
 from pathlib import Path
 
-DATA_DIR = Path(__file__).resolve().parent / "scriptures"
+DATA_DIR = Path(__file__).resolve().parent
 
 MISHNAH_JSON = DATA_DIR / "json" / "mishnah.json"
 TRACTATES_CSV = DATA_DIR / "csv" / "tractates.csv"
 ORDERS_CSV = DATA_DIR / "csv" / "orders.csv"
 
-class Order:
+class MishnahOrder:
 	def __init__(self, mishnah, number, **metadata):
 		self.mishnah = mishnah
 		self.number = number
@@ -26,9 +25,9 @@ class Order:
 		return [tractate for tractate in self.mishnah.tractates if tractate.order == self]
 
 	def __repr__(self):
-		return f"Order({self.number}: {self.latin_name})"
+		return f"MishnahOrder({self.number}: {self.latin_name})"
 
-class Mishnaya:
+class MishnahMishnaya:
 	def __init__(self, chapter, number):
 		self.chapter = chapter
 		self.number = number
@@ -39,14 +38,14 @@ class Mishnaya:
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Mishnaya({self.chapter.tractate.english_name}:{self.chapter.number}:{self.number})"
+		return f"MishnahMishnaya({self.chapter.tractate.english_name}:{self.chapter.number}:{self.number})"
 
 
 
@@ -80,15 +79,15 @@ class MishnahChapter:
 
 	@property
 	def mishnayot(self):
-		return [Mishnaya(self, i+1) for i in range(len(self.data)) if self.data[i]]
+		return [MishnahMishnaya(self, i+1) for i in range(len(self.data)) if self.data[i]]
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"MishnahChapter({self.tractate.english_name}:{self.number})"
@@ -120,11 +119,11 @@ class MishnahTractate:
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"MishnahTractate({self.english_name})"
@@ -133,21 +132,25 @@ class Mishnah:
 	def __init__(self):
 		with open(MISHNAH_JSON, 'r', encoding='utf-8') as f:
 			self.data = json.load(f)
-		self._tractate_data = pd.read_csv(TRACTATES_CSV)
+		with open(TRACTATES_CSV, newline='', encoding='utf-8') as f:
+			self._tractate_data = list(csv.DictReader(f))
 
 		self.orders = []
-		data = pd.read_csv(ORDERS_CSV)
-		for idx, row in data.iterrows():
+		with open(ORDERS_CSV, newline='', encoding='utf-8') as f:
+			data = list(csv.DictReader(f))
+		for idx, row in enumerate(data):
 			number = idx + 1
-			order = Order(self, number, **row.to_dict())
+			order = MishnahOrder(self, number, **row)
 			self.orders.append(order)
 
 	@property
 	def tractates(self):
 		result = []
-		for i, row in self._tractate_data.iterrows():
+		for i, row in enumerate(self._tractate_data):
 			if i < len(self.data) and self.data[i]:
-				tractate = MishnahTractate(self, i+1, **row.to_dict())
+				metadata = dict(row)
+				metadata['order_number'] = int(metadata['order_number'])
+				tractate = MishnahTractate(self, i+1, **metadata)
 				result.append(tractate)
 		return result
 

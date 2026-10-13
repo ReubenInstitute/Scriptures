@@ -1,14 +1,14 @@
 import json
-import pandas as pd
-import HebrewNumbers
+import csv
+import hebrew
 from pathlib import Path
 
-DATA_DIR = Path(__file__).resolve().parent / "scriptures"
+DATA_DIR = Path(__file__).resolve().parent
 
 ZOHAR_JSON = DATA_DIR / "json" / "zohar.json"
 CHAPTERS_CSV = DATA_DIR / "csv" / "zohar-chapters.csv"
 
-class Verse:
+class ZoharVerse:
 	def __init__(self, article, number):
 		self.article = article
 		self.number = number
@@ -19,18 +19,18 @@ class Verse:
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Verse({self.article.chapter.number}:{self.article.number}:{self.number})"
+		return f"ZoharVerse({self.article.chapter.number}:{self.article.number}:{self.number})"
 
 
 
-class Article:
+class ZoharArticle:
 	def __init__(self, chapter, number):
 		self.chapter = chapter
 		self.number = number
@@ -70,20 +70,20 @@ class Article:
 
 	@property
 	def verses(self):
-		return [Verse(self, i+1) for i in range(len(self.data)) if self.data[i]]
+		return [ZoharVerse(self, i+1) for i in range(len(self.data)) if self.data[i]]
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Article({self.chapter.number}:{self.number})"
+		return f"ZoharArticle({self.chapter.number}:{self.number})"
 
-class Chapter:
+class ZoharChapter:
 	def __init__(self, zohar, number, english_title, hebrew_title, group):
 		self.zohar = zohar
 		self.number = number
@@ -97,19 +97,19 @@ class Chapter:
 
 	@property
 	def articles(self):
-		return [Article(self, i+1) for i in range(len(self.data)) if self.data[i] and any(self.data[i])]
+		return [ZoharArticle(self, i+1) for i in range(len(self.data)) if self.data[i] and any(self.data[i])]
 
 	def __repr__(self):
-		return f"Chapter({self.number}: {self.english_title})"
+		return f"ZoharChapter({self.number}: {self.english_title})"
 
 class Zohar:
 	def __init__(self):
 		with open(ZOHAR_JSON, 'r', encoding='utf-8') as f:
 			self.data = json.load(f)
-		chapters_df = pd.read_csv(CHAPTERS_CSV)
 		self._chapters_metadata = {}
-		for idx, row in chapters_df.iterrows():
-			self._chapters_metadata[idx] = (row['english_title'], row['hebrew_title'], row['group'])
+		with open(CHAPTERS_CSV, newline='', encoding='utf-8') as f:
+			for idx, row in enumerate(csv.DictReader(f)):
+				self._chapters_metadata[idx] = (row['english_title'], row['hebrew_title'], row['group'])
 
 	@property
 	def sections(self):
@@ -122,7 +122,7 @@ class Zohar:
 		for i, chapter_data in enumerate(self.data):
 			if chapter_data and any(chapter_data):
 				english_title, hebrew_title, group = self._chapters_metadata.get(i)#, (f"Chapter {i+1}", "", ""))
-				result.append(Chapter(self, i + 1, english_title, hebrew_title, group))
+				result.append(ZoharChapter(self, i + 1, english_title, hebrew_title, group))
 		return result
 
 if __name__ == "__main__":

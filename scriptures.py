@@ -1,10 +1,10 @@
-from Bible import Bible
-from Mishnah import Mishnah
-from TalmudBavli import TalmudBavli
-from TalmudYerushalmi import YerushalmiTalmud
-from Zohar import Zohar
-from ZoharChadash import ZoharChadash
-from ZoharTikkunim import ZoharTikkunim
+from .bible import Bible
+from .mishnah import Mishnah
+from .talmudbavli import TalmudBavli
+from .talmudyerushalmi import YerushalmiTalmud
+from .zohar import Zohar
+from .zoharchadash import ZoharChadash
+from .zohartikkunim import ZoharTikkunim
 
 class TalmudContainer:
 	pass

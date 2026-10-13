@@ -1,15 +1,14 @@
 import json
-import pandas as pd
-import HebrewNumbers
-import Hebrew
+import csv
+import hebrew
 
 from pathlib import Path
-DATA_DIR = Path(__file__).resolve().parent / "scriptures"
+DATA_DIR = Path(__file__).resolve().parent
 
 YERUSHALMI_JSON = DATA_DIR / "json" / "yerushalmi.json"
 TRACTATES_CSV = DATA_DIR / "csv" / "tractates.csv"
 
-class Verse:
+class TalmudYerushalmiVerse:
 	def __init__(self, paragraph, number):
 		self.paragraph = paragraph
 		self.number = number
@@ -20,16 +19,16 @@ class Verse:
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Verse({self.paragraph.chapter.tractate.number}:{self.paragraph.chapter.number}:{self.paragraph.number}:{self.number})"
+		return f"TalmudYerushalmiVerse({self.paragraph.chapter.tractate.number}:{self.paragraph.chapter.number}:{self.paragraph.number}:{self.number})"
 
-class Paragraph:
+class TalmudYerushalmiParagraph:
 	def __init__(self, chapter, number):
 		self.chapter = chapter
 		self.number = number
@@ -40,20 +39,20 @@ class Paragraph:
 
 	@property
 	def verses(self):
-		return [Verse(self, i+1) for i in range(len(self.data)) if self.data[i]]
+		return [TalmudYerushalmiVerse(self, i+1) for i in range(len(self.data)) if self.data[i]]
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Paragraph({self.chapter.tractate.number}:{self.chapter.number}:{self.number})"
+		return f"TalmudYerushalmiParagraph({self.chapter.tractate.number}:{self.chapter.number}:{self.number})"
 
-class Chapter:
+class TalmudYerushalmiChapter:
 	def __init__(self, tractate, number):
 		self.tractate = tractate
 		self.number = number
@@ -64,20 +63,20 @@ class Chapter:
 
 	@property
 	def paragraphs(self):
-		return [Paragraph(self, i+1) for i in range(len(self.data)) if self.data[i] and any(self.data[i])]
+		return [TalmudYerushalmiParagraph(self, i+1) for i in range(len(self.data)) if self.data[i] and any(self.data[i])]
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Chapter({self.tractate.number}:{self.number})"
+		return f"TalmudYerushalmiChapter({self.tractate.number}:{self.number})"
 
-class Tractate:
+class TalmudYerushalmiTractate:
 	def __init__(self, yerushalmi, number, english_name, hebrew_name, hebrew_fullspell_name):
 		self.yerushalmi = yerushalmi
 		self.number = number
@@ -95,28 +94,28 @@ class Tractate:
 
 	@property
 	def chapters(self):
-		return [Chapter(self, i+1) for i in range(len(self.data)) if self.data[i] and any(self.data[i])]
+		return [TalmudYerushalmiChapter(self, i+1) for i in range(len(self.data)) if self.data[i] and any(self.data[i])]
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Tractate({self.english_name})"
+		return f"TalmudYerushalmiTractate({self.english_name})"
 
 class YerushalmiTalmud:
 	def __init__(self):
 		with open(YERUSHALMI_JSON, 'r', encoding='utf-8') as f:
 			self.data = json.load(f)
-		csvdata = pd.read_csv(TRACTATES_CSV)
 		self._metadata = {}
-		for i, row in csvdata.iterrows():
-			if row.get('yerushalmi') == 1.0:
-				self._metadata[i] = row
+		with open(TRACTATES_CSV, newline='', encoding='utf-8') as f:
+			for i, row in enumerate(csv.DictReader(f)):
+				if row.get('yerushalmi') == '1':
+					self._metadata[i] = row
 
 	@property
 	def tractates(self):
@@ -124,7 +123,7 @@ class YerushalmiTalmud:
 		for i, tractate_data in enumerate(self.data):
 			if tractate_data and any(tractate_data) and i in self._metadata:
 				row = self._metadata[i]
-				result.append(Tractate(self, i+1, row['english_name'], row['hebrew_name'], row['hebrew_fullspell_name']))
+				result.append(TalmudYerushalmiTractate(self, i+1, row['english_name'], row['hebrew_name'], row['hebrew_fullspell_name']))
 		return result
 
 	def __repr__(self):

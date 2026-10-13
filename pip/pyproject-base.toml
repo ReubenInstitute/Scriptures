@@ -3,20 +3,18 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "scriptures"
-version = "0.30"
-description = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar) for Reuben Institute's Hebrew text corpus, with a bundled web viewer available separately"
-readme = { text = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar) for Reuben Institute's Hebrew text corpus, with a bundled web viewer available separately.", content-type = "text/plain" }
+name = "hebrew-scriptures"
+version = "0.31"
+description = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar)."
+readme = { text = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar).", content-type = "text/plain" }
 license = "GPL-3.0-or-later"
 license-files = ["GPL-3"]
 requires-python = ">=3.8"
 dependencies = [
     "python-hebrew",
-    "pandas",
 ]
 
 [tool.setuptools]
-py-modules = ["Scriptures", "Bible", "Mishnah", "TalmudBavli", "TalmudYerushalmi", "Zohar", "ZoharChadash", "ZoharTikkunim"]
 packages = ["scriptures"]
 
 [tool.setuptools.package-data]

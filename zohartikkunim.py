@@ -1,12 +1,12 @@
 import json
-import HebrewNumbers
+import hebrew
 from pathlib import Path
 
-DATA_DIR = Path(__file__).resolve().parent / "scriptures"
+DATA_DIR = Path(__file__).resolve().parent
 
 ZOHAR_TIKKUNIM_JSON = DATA_DIR / "json" / "zohar-tikkunim.json"
 
-class Verse:
+class ZoharTikkunimVerse:
 	def __init__(self, chapter, number):
 		self.chapter = chapter
 		self.number = number
@@ -17,16 +17,16 @@ class Verse:
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Verse({self.chapter.number}:{self.number})"
+		return f"ZoharTikkunimVerse({self.chapter.number}:{self.number})"
 
-class Chapter:
+class ZoharTikkunimChapter:
 	def __init__(self, zohar_tikkunim, number):
 		self.zohar_tikkunim = zohar_tikkunim
 		self.number = number
@@ -37,18 +37,18 @@ class Chapter:
 
 	@property
 	def verses(self):
-		return [Verse(self, i+1) for i in range(len(self.data)) if self.data[i]]
+		return [ZoharTikkunimVerse(self, i+1) for i in range(len(self.data)) if self.data[i]]
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Chapter({self.number})"
+		return f"ZoharTikkunimChapter({self.number})"
 
 class ZoharTikkunim:
 	def __init__(self):
@@ -57,7 +57,7 @@ class ZoharTikkunim:
 
 	@property
 	def chapters(self):
-		return [Chapter(self, i+1) for i, chapter_data in enumerate(self.data)
+		return [ZoharTikkunimChapter(self, i+1) for i, chapter_data in enumerate(self.data)
 				if chapter_data and any(chapter_data)]
 
 	def __repr__(self):

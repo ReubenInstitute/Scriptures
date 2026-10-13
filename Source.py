@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import json
-import pandas as pd
+import csv
 from pathlib import Path
 import requests
 from urllib.parse import quote
@@ -15,7 +15,11 @@ import sys
 SCRIPT_DIR = Path(__file__).resolve().parent
 CSV_DIR = SCRIPT_DIR / "scriptures" / "csv"
 SYSTEM_OUTPUT_DIR = Path("/usr/share/scriptures")
-CACHE_DIR = Path.home() / ".scriptures" / "cache"
+CACHE_DIR = Path.home() / ".cache" "scriptures"
+
+def read_csv_rows(path):
+	with open(path, newline='', encoding='utf-8') as f:
+		return list(csv.DictReader(f))
 
 class Source:
 	CACHE_DIR = CACHE_DIR

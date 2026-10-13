@@ -1,15 +1,14 @@
 import json
-import pandas as pd
-import HebrewNumbers
-import Hebrew
+import csv
+import hebrew
 from pathlib import Path
 
-DATA_DIR = Path(__file__).resolve().parent / "scriptures"
+DATA_DIR = Path(__file__).resolve().parent
 
 BAVLI_JSON = DATA_DIR / "json" / "bavli.json"
 TRACTATES_CSV = DATA_DIR / "csv" / "tractates.csv"
 
-class Verse:
+class TalmudBavliVerse:
 	def __init__(self, page, number):
 		self.page = page
 		self.number = number
@@ -20,16 +19,16 @@ class Verse:
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Verse({self.page.tractate.number}:{self.page.number}:{self.number})"
+		return f"TalmudBavliVerse({self.page.tractate.number}:{self.page.number}:{self.number})"
 
-class Page:
+class TalmudBavliPage:
 	def __init__(self, tractate, number):
 		self.tractate = tractate
 		self.number = number
@@ -40,20 +39,20 @@ class Page:
 
 	@property
 	def verses(self):
-		return [Verse(self, i+1) for i in range(len(self.data)) if self.data[i]]
+		return [TalmudBavliVerse(self, i+1) for i in range(len(self.data)) if self.data[i]]
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Page({self.tractate.number}:{self.number})"
+		return f"TalmudBavliPage({self.tractate.number}:{self.number})"
 
-class Tractate:
+class TalmudBavliTractate:
 	def __init__(self, talmud, number, english_name, hebrew_name, hebrew_fullspell_name):
 		self.talmud = talmud
 		self.number = number
@@ -71,36 +70,35 @@ class Tractate:
 
 	@property
 	def pages(self):
-		return [Page(self, i+1) for i in range(len(self.data)) if self.data[i] and any(self.data[i])]
+		return [TalmudBavliPage(self, i+1) for i in range(len(self.data)) if self.data[i] and any(self.data[i])]
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Tractate({self.english_name})"
+		return f"TalmudBavliTractate({self.english_name})"
 
 class TalmudBavli:
 	def __init__(self):
 		with open(BAVLI_JSON, 'r', encoding='utf-8') as f:
 			self.data = json.load(f)
-		csvdata = pd.read_csv(TRACTATES_CSV)
 		self._metadata = {}
-		for i, row in csvdata.iterrows():
-			#if row.get('bavli') == 1.0:
-			self._metadata[i] = row
+		with open(TRACTATES_CSV, newline='', encoding='utf-8') as f:
+			for i, row in enumerate(csv.DictReader(f)):
+				self._metadata[i] = row
 
 	@property
 	def tractates(self):
 		result = []
 		for i, tractate_data in enumerate(self.data):
 			row = self._metadata[i]
-			if tractate_data and any(tractate_data) and i in self._metadata and row.get('bavli') == 1:
-				result.append(Tractate(self, i+1, row['english_name'], row['hebrew_name'], row['hebrew_fullspell_name']))
+			if tractate_data and any(tractate_data) and i in self._metadata and row.get('bavli') == '1':
+				result.append(TalmudBavliTractate(self, i+1, row['english_name'], row['hebrew_name'], row['hebrew_fullspell_name']))
 		return result
 
 	def __repr__(self):

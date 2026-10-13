@@ -1,14 +1,14 @@
 import json
-import pandas as pd
-import HebrewNumbers
+import csv
+import hebrew
 from pathlib import Path
 
-DATA_DIR = Path(__file__).resolve().parent / "scriptures"
+DATA_DIR = Path(__file__).resolve().parent
 
 ZOHAR_CHADASH_JSON = DATA_DIR / "json" / "zohar-chadash.json"
 CHAPTERS_CSV = DATA_DIR / "csv" / "zohar-chadash-chapters.csv"
 
-class Verse:
+class ZoharChadashVerse:
 	def __init__(self, chapter, number):
 		self.chapter = chapter
 		self.number = number
@@ -19,16 +19,16 @@ class Verse:
 
 	@property
 	def hebrew_number(self):
-		return HebrewNumbers.int_to_gematria(self.number)
+		return hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return HebrewNumbers.int_to_gematria(self.number, gershayim=True)
+		return hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
-		return f"Verse({self.chapter.number}:{self.number})"
+		return f"ZoharChadashVerse({self.chapter.number}:{self.number})"
 
-class Chapter:
+class ZoharChadashChapter:
 	def __init__(self, zohar_chadash, number, **kwargs):
 		self.PAGESIZE = 40
 		self.zohar_chadash = zohar_chadash
@@ -50,7 +50,7 @@ class Chapter:
 			return chapters[self.number - 2]
 		return None
 
-#class Chapter:
+#class ZoharChadashChapter:
 #	def __init__(self, zohar_chadash, number, english_title, hebrew_title):
 #		self.zohar_chadash = zohar_chadash
 #		self.number = number
@@ -63,10 +63,10 @@ class Chapter:
 
 	@property
 	def verses(self):
-		return [Verse(self, i+1) for i in range(len(self.data)) if self.data[i]]
+		return [ZoharChadashVerse(self, i+1) for i in range(len(self.data)) if self.data[i]]
 
 	def __repr__(self):
-		return f"Chapter({self.number}: {self.english_title})"
+		return f"ZoharChadashChapter({self.number}: {self.english_title})"
 
 
 
@@ -101,10 +101,10 @@ class ZoharChadash:
 		#self._chapter_titles = {}
 		#for idx, row in chapters_df.iterrows():
 		#	self._chapter_titles[idx] = (row['english_title'], row['hebrew_title'])
-		data = pd.read_csv(CHAPTERS_CSV)
 		self._metadata = []
-		for idx, row in data.iterrows():
-			self._metadata.append(row.to_dict())
+		with open(CHAPTERS_CSV, newline='', encoding='utf-8') as f:
+			for row in csv.DictReader(f):
+				self._metadata.append(row)
 
 	@property
 	def sections(self):
@@ -118,7 +118,7 @@ class ZoharChadash:
 				# get the metadata for this chapter (if exists)
 			metadata = self._metadata[i]# if i < len(self._metadata) else {}
 				# pass the metadata as keyword arguments
-			result.append(Chapter(self, i + 1, **metadata))
+			result.append(ZoharChadashChapter(self, i + 1, **metadata))
 		return result
 
 	@property
@@ -127,7 +127,7 @@ class ZoharChadash:
 		for i, chapter_data in enumerate(self.data):
 			if chapter_data and any(chapter_data):
 				english_title, hebrew_title = self._chapter_titles.get(i, (f"Chapter {i+1}", ""))
-				result.append(Chapter(self, i+1, english_title, hebrew_title))
+				result.append(ZoharChadashChapter(self, i+1, english_title, hebrew_title))
 		return result
 
 	def __repr__(self):

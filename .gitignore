@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 debian-pkg/
 *.deb
+/build/
