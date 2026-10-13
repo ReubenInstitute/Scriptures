@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hebrew-scriptures"
-version = "0.31"
+version = "0.32"
 description = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar)."
 readme = { text = "Hebrew scripture text classes (Bible, Mishnah, Talmud, Zohar).", content-type = "text/plain" }
 license = "GPL-3.0-or-later"
