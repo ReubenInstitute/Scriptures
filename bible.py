@@ -2,7 +2,7 @@ import csv
 import json
 import re
 from pathlib import Path
-import hebrew
+import Hebrew
 
 DATA_DIR = Path(__file__).resolve().parent
 
@@ -19,8 +19,8 @@ class BibleVerse:
 	def words(self):
 		# a word joined with a maqaf is two spoken words; what sits between two words is the spacer,
 		# a space or a maqaf
-		separators = ' ' + hebrew.MAQAF
-		return [[(word, hebrew.MAQAF if hebrew.MAQAF in spacer else ' ')
+		separators = ' ' + Hebrew.MAQAF
+		return [[(word, Hebrew.MAQAF if Hebrew.MAQAF in spacer else ' ')
 				for word, spacer in re.findall('([^%s]+)([%s]*)' % (separators, separators), line)]
 			for line in self.lines]
 
@@ -40,7 +40,7 @@ class BibleVerse:
 
 	@property
 	def raw_words(self):
-		words = hebrew.raw_text(self.orig_text)
+		words = Hebrew.raw_text(self.orig_text)
 		words = words.split(' ')
 		return words
 
@@ -62,19 +62,19 @@ class BibleVerse:
 
 	@property
 	def bare_text(self):
-		c = hebrew.strip_cantillation(self.orig_text)
-		c = hebrew.strip_hebrew_punctuation(c)
-		c = hebrew.strip_diacritics(c)
-		c = hebrew.strip_punctuation(c)
+		c = Hebrew.strip_cantillation(self.orig_text)
+		c = Hebrew.strip_hebrew_punctuation(c)
+		c = Hebrew.strip_diacritics(c)
+		c = Hebrew.strip_punctuation(c)
 		return c
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"BibleVerse({self.chapter.book.number}:{self.chapter.number}:{self.number})"
@@ -112,11 +112,11 @@ class BibleChapter:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	@property
 	def num_words(self):
@@ -140,7 +140,7 @@ class BibleBook:
 
 	@property
 	def hebrew_name(self):
-		return hebrew.strip_diacritics(self.hebrew_full_name)
+		return Hebrew.strip_diacritics(self.hebrew_full_name)
 
 	@property
 	def latin_name(self):

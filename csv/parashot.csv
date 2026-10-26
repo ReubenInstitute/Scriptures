@@ -1,0 +1,55 @@
+number,path,book,intra_number,start_chapter,start_verse,end_chapter,end_verse,verses,english_name,hebrew_name
+1,bereshit,1,1,1,1,6,8,146,BeReshit,בראשית
+2,noach,1,2,6,9,11,32,153,Noach,נֹחַ
+3,lechlecha,1,3,12,1,17,27,126,Lech Lecha,לֶךְ-לְךָ
+4,vayera,1,4,18,1,22,24,147,VaYera,וַיֵּרָא
+5,chayeisarah,1,5,23,1,25,18,105,Chayei Sarah,חַיֵּי שָׂרָה
+6,toledot,1,6,25,19,28,9,106,Toledot,תּוֹלְדֹת
+7,vayetze,1,7,28,1,32,3,148,VaYetze,וַיֵּצֵא
+8,vayishlach,1,8,32,4,36,43,153,VaYishlach,וַיִּשְׁלַח
+9,vayeshev,1,9,37,1,40,23,112,VaYeshev,וַיֵּשֶׁב
+10,miketz,1,10,41,1,44,17,0,MiKetz,מִקֵּץ
+11,vayigash,1,11,44,18,47,27,106,VaYigash,וַיִּגַּשׁ
+12,vayechi,1,12,47,28,50,26,85,VaYechi,וַיְחִי
+13,shemot,2,1,1,1,6,1,124,Shemot,שְׁמוֹת
+14,vaeira,2,2,6,2,9,35,121,VaEira,וָאֵרָא
+15,bo,2,3,10,1,13,16,106,Bo,בֹּא
+16,beshalach,2,4,13,17,17,16,116,BeShalach,בְּשַׁלַּח
+17,yitro,2,5,18,1,20,22,75,Yitro,יִתְרוֹ
+18,mishpatim,2,6,21,1,24,18,118,Mishpatim,מִּשְׁפָּטִים
+19,terumah,2,7,25,1,27,19,96,Terumah,תְּרוּמָה
+20,tetzaveh,2,8,27,2,30,1,101,Tetzaveh,תְּצַוֶּה
+21,kitisa,2,9,30,11,34,35,139,Ki Tisa,כִּי תִשָּׂא
+22,vayakhel,2,10,35,1,38,2,122,VaYakhel,וַיַּקְהֵל
+23,pekudei,2,11,38,21,40,38,92,Pekudei,פְקוּדֵי
+24,vayikra,3,1,1,1,5,26,111,VaYikra,ויקרא
+25,tzav,3,2,6,1,8,36,97,Tzav,צו
+26,shemini,3,3,9,1,11,47,91,Shemini,שמיני
+27,tazria,3,4,12,1,13,59,67,Tazria,תזריע
+28,metzora,3,5,14,1,15,33,90,Metzora,מצרע
+29,achareimot,3,6,16,1,18,3,80,Acharei Mot,אחרי מות
+30,kedoshim,3,7,19,1,20,27,64,Kedoshim,קדשים
+31,emor,3,8,21,1,24,23,86,Emor,אמור
+32,behar,3,9,25,1,26,2,57,Behar,בְּהַר
+33,bechukotai,3,10,26,3,27,34,63,Bechukotai,בְּחֻקֹּתָי
+34,bamidbar,4,1,1,1,4,2,176,BaMidbar,בְּמִדְבַּר
+35,naso,4,2,4,21,7,89,176,Naso,נָשֹׂא
+36,behaalotecha,4,3,8,1,12,16,136,BeHa'alotecha,בְּהַעֲלוֹתֶךָ
+37,shelach,4,4,13,1,15,41,139,Shelach,שְׁלַח
+38,korach,4,5,16,1,18,32,97,Korach,קֹרַח
+39,chukat,4,6,19,1,22,1,88,Chukat,חֻקַּת
+40,balak,4,7,22,2,25,9,105,Balak,בָּלָק
+41,pinchas,4,8,25,1,30,1,71,Pinchas,פִּינְחָס
+42,matot,4,9,30,2,32,42,89,Matot,מַטּוֹת
+43,masei,4,10,33,1,36,13,90,Masei,מַסְעֵי
+44,devarim,5,1,1,1,3,22,105,Devarim,דְּבָרִים
+45,vaetchanan,5,2,3,23,7,11,105,Va'etchanan,וָאֶתְחַנַּן
+46,eikev,5,3,7,12,11,25,85,Eikev,עֵיקֶב
+47,reeh,5,4,11,26,16,17,78,Re'eh,רְאֵה
+48,shoftim,5,5,16,18,21,9,96,Shoftim,שֹׁפְטִים
+49,kiteitzei,5,6,21,1,25,19,89,Ki Teitzei,כִּי תֵצֵא
+50,kitavo,5,7,26,1,29,8,74,Ki Tavo,כִּי תָבוֹא
+51,nitzavim,5,8,29,9,30,2,40,Nitzavim,נִצָּבִים
+52,vayeilech,5,9,31,1,31,3,30,Vayeilech,וַיֵּלֶךְ
+53,haazinu,5,10,32,1,32,52,70,Ha'azinu,הַאֲזִינוּ
+54,vezothaberachah,5,11,33,1,34,12,54,Vezot Haberachah,וְזֹאת הַבְּרָכָה

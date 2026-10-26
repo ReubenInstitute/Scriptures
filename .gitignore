@@ -1,6 +1,2 @@
-json-cache/
 __pycache__/
-*.pyc
-debian-pkg/
-*.deb
-/build/
+download/

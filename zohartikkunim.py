@@ -1,5 +1,5 @@
 import json
-import hebrew
+import Hebrew
 from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent
@@ -17,11 +17,11 @@ class ZoharTikkunimVerse:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"ZoharTikkunimVerse({self.chapter.number}:{self.number})"
@@ -41,11 +41,11 @@ class ZoharTikkunimChapter:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"ZoharTikkunimChapter({self.number})"

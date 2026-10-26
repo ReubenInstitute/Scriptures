@@ -1,6 +1,6 @@
 import json
 import csv
-import hebrew
+import Hebrew
 from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent
@@ -38,11 +38,11 @@ class MishnahMishnaya:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"MishnahMishnaya({self.chapter.tractate.english_name}:{self.chapter.number}:{self.number})"
@@ -83,11 +83,11 @@ class MishnahChapter:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"MishnahChapter({self.tractate.english_name}:{self.number})"
@@ -119,11 +119,11 @@ class MishnahTractate:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"MishnahTractate({self.english_name})"

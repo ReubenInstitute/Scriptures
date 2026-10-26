@@ -12,18 +12,18 @@ import argparse
 import shutil
 import sys
 
-SCRIPT_DIR = Path(__file__).resolve().parent
-CSV_DIR = SCRIPT_DIR / "scriptures" / "csv"
-SYSTEM_OUTPUT_DIR = Path("/usr/share/scriptures")
-CACHE_DIR = Path.home() / ".cache" "scriptures"
+ROOT = Path(__file__).resolve().parent
+DOWNLOAD_FOLDER = ROOT / "download"
+JSON_FOLDER = ROOT / "json"
+CSV_FOLDER = ROOT / "csv"
+
 
 def read_csv_rows(path):
 	with open(path, newline='', encoding='utf-8') as f:
 		return list(csv.DictReader(f))
 
+
 class Source:
-	CACHE_DIR = CACHE_DIR
-	OUTPUT_DIR = None
 	URL_FUCKUPS = {
 		"https://www.sefaria.org.il/download/version/Mishnah%20Avot%20-%20he%20-%20Mishnah,%20ed.%20Romm,%20Vilna%201913.json":
 			"https://www.sefaria.org.il/download/version/Pirkei%20Avot%20-%20he%20-%20Mishnah,%20ed.%20Romm,%20Vilna%201913.json",
@@ -41,46 +41,46 @@ class Source:
 
 	@classmethod
 	def download(cls):
-		cls.CACHE_DIR.mkdir(parents=True, exist_ok=True)
+		DOWNLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
 		print("📁 Checking for missing source files...")
-		books_df = pd.read_csv(CSV_DIR / "books.csv")
-		tractates_df = pd.read_csv(CSV_DIR / "tractates.csv")
+		books_df = read_csv_rows(CSV_FOLDER / "books.csv")
+		tractates_df = read_csv_rows(CSV_FOLDER / "tractates.csv")
 		missing_files = []
 		bible_template = "https://www.sefaria.org.il/download/version/{NAME}%20-%20he%20-%20Miqra%20according%20to%20the%20Masorah.json"
-		for _, row in books_df.iterrows():
+		for row in books_df:
 			default_url = bible_template.format(NAME=quote(row['latin_name']))
 			final_url = cls.URL_FUCKUPS.get(default_url, default_url)
 			filename = f"bible_{row['latin_name'].lower().replace(' ', '_')}.json"
-			cache_file = cls.CACHE_DIR / filename
+			cache_file = DOWNLOAD_FOLDER / filename
 			if not cache_file.exists():
 				missing_files.append((row['latin_name'], final_url, filename))
 
 		mishnah_template = "https://www.sefaria.org.il/download/version/Mishnah%20{NAME}%20-%20he%20-%20Mishnah,%20ed.%20Romm,%20Vilna%201913.json"
-		for _, row in tractates_df.iterrows():
+		for row in tractates_df:
 			default_url = mishnah_template.format(NAME=quote(row['english_name']))
 			final_url = cls.URL_FUCKUPS.get(default_url, default_url)
 			filename = f"mishnah_{row['english_name'].lower().replace(' ', '_')}.json"
-			cache_file = cls.CACHE_DIR / filename
+			cache_file = DOWNLOAD_FOLDER / filename
 			if not cache_file.exists():
 				missing_files.append((f"Mishnah {row['english_name']}", final_url, filename))
 
 		bavli_template = "https://www.sefaria.org.il/download/version/{NAME}%20-%20he%20-%20William%20Davidson%20Edition%20-%20Vocalized%20Aramaic.json"
-		bavli_df = tractates_df[tractates_df['bavli'] == 1]
-		for _, row in bavli_df.iterrows():
+		bavli_df = [row for row in tractates_df if row.get('bavli') == '1']
+		for row in bavli_df:
 			default_url = bavli_template.format(NAME=quote(row['english_name']))
 			final_url = cls.URL_FUCKUPS.get(default_url, default_url)
 			filename = f"bavli_{row['english_name'].lower().replace(' ', '_')}.json"
-			cache_file = cls.CACHE_DIR / filename
+			cache_file = DOWNLOAD_FOLDER / filename
 			if not cache_file.exists():
 				missing_files.append((f"Bavli {row['english_name']}", final_url, filename))
 
 		yerushalmi_template = "https://www.sefaria.org.il/download/version/Jerusalem%20Talmud%20{NAME}%20-%20he%20-%20Venice%20Edition.json"
-		yerushalmi_df = tractates_df[tractates_df['yerushalmi'] == 1]
-		for _, row in yerushalmi_df.iterrows():
+		yerushalmi_df = [row for row in tractates_df if row.get('yerushalmi') == '1']
+		for row in yerushalmi_df:
 			default_url = yerushalmi_template.format(NAME=quote(row['english_name']))
 			final_url = cls.URL_FUCKUPS.get(default_url, default_url)
 			filename = f"yerushalmi_{row['english_name'].lower().replace(' ', '_')}.json"
-			cache_file = cls.CACHE_DIR / filename
+			cache_file = DOWNLOAD_FOLDER / filename
 			if not cache_file.exists():
 				missing_files.append((f"Yerushalmi {row['english_name']}", final_url, filename))
 
@@ -90,7 +90,7 @@ class Source:
 			('Tikkunei Zohar', cls.URL_FUCKUPS['https://www.sefaria.org.il/download/version/Tikkunei%20Zohar.json'], 'zohar_tikkunei_zohar.json')
 		]
 		for name, url, filename in zohar_configs:
-			cache_file = cls.CACHE_DIR / filename
+			cache_file = DOWNLOAD_FOLDER / filename
 			if not cache_file.exists():
 				missing_files.append((name, url, filename))
 
@@ -100,8 +100,7 @@ class Source:
 				try:
 					response = requests.get(url, timeout=30)
 					if response.status_code == 200:
-						cache_file = cls.CACHE_DIR / filename
-						with open(cache_file, 'w', encoding='utf-8') as f:
+						with open(DOWNLOAD_FOLDER / filename, 'w', encoding='utf-8') as f:
 							json.dump(response.json(), f, ensure_ascii=False, indent=2)
 						print(f"✅ [{i+1}/{len(missing_files)}] Downloaded: {name}")
 					else:
@@ -116,7 +115,7 @@ class Source:
 	@classmethod
 	def build(cls):
 		cls.download()
-		cls.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+		JSON_FOLDER.mkdir(parents=True, exist_ok=True)
 		print("\n" + "=" * 40)
 		print("🔄 CONVERTING ALL TEXTS")
 		print("=" * 40)
@@ -135,10 +134,10 @@ class Source:
 	@classmethod
 	def build_bible(cls):
 		print("📖 Converting Bible...")
-		books_df = pd.read_csv(CSV_DIR / "books.csv")
+		books_df = read_csv_rows(CSV_FOLDER / "books.csv")
 		bible_data = []
-		for _, row in books_df.iterrows():
-			filename = cls.CACHE_DIR / f"bible_{row['latin_name'].lower().replace(' ', '_')}.json"
+		for row in books_df:
+			filename = DOWNLOAD_FOLDER / f"bible_{row['latin_name'].lower().replace(' ', '_')}.json"
 			if filename.exists():
 				with open(filename, 'r', encoding='utf-8') as f:
 					book_json = json.load(f)
@@ -154,7 +153,7 @@ class Source:
 			else:
 				bible_data.append([])
 				print(f"⚠️  Missing Bible book: {row['latin_name']}")
-		with open(cls.OUTPUT_DIR / 'bible.json', 'w', encoding='utf-8') as f:
+		with open(JSON_FOLDER / 'bible.json', 'w', encoding='utf-8') as f:
 			json.dump(bible_data, f, ensure_ascii=False, indent=2)
 		print(f"✅ Bible: {len(bible_data)} books (cleaned)")
 		return bible_data
@@ -162,10 +161,10 @@ class Source:
 	@classmethod
 	def build_mishnah(cls):
 		print("📖 Converting Mishnah...")
-		tractates_df = pd.read_csv(CSV_DIR / "tractates.csv")
+		tractates_df = read_csv_rows(CSV_FOLDER / "tractates.csv")
 		mishnah_data = []
-		for _, row in tractates_df.iterrows():
-			filename = cls.CACHE_DIR / f"mishnah_{row['english_name'].lower().replace(' ', '_')}.json"
+		for row in tractates_df:
+			filename = DOWNLOAD_FOLDER / f"mishnah_{row['english_name'].lower().replace(' ', '_')}.json"
 			if filename.exists():
 				with open(filename, 'r', encoding='utf-8') as f:
 					tractate_json = json.load(f)
@@ -173,7 +172,7 @@ class Source:
 				mishnah_data.append(tractate_text)
 			else:
 				mishnah_data.append([])
-		with open(cls.OUTPUT_DIR / 'mishnah.json', 'w', encoding='utf-8') as f:
+		with open(JSON_FOLDER / 'mishnah.json', 'w', encoding='utf-8') as f:
 			json.dump(mishnah_data, f, ensure_ascii=False, indent=2)
 		print(f"✅ Mishnah: {len(mishnah_data)} tractates")
 		return mishnah_data
@@ -181,16 +180,19 @@ class Source:
 	@classmethod
 	def build_bavli(cls):
 		print("📖 Converting Talmud Bavli (page-based)...")
-		tractates_df = pd.read_csv(CSV_DIR / "tractates.csv")
+		tractates_df = read_csv_rows(CSV_FOLDER / "tractates.csv")
 		bavli_data = []
-		for _, row in tractates_df.iterrows():
-			filename = cls.CACHE_DIR / f"bavli_{row['english_name'].lower().replace(' ', '_')}.json"
-			if filename.exists() and row['bavli'] == 1:
-				with open(filename, 'r', encoding='utf-8') as f:
-					tractate_json = json.load(f)
-				text_data = tractate_json.get('text', [])
-				cleaned_text = [page for page in text_data if page and isinstance(page, list)]
-				bavli_data.append(cleaned_text)
+		for row in tractates_df:
+			if row.get('bavli') == '1':
+				filename = DOWNLOAD_FOLDER / f"bavli_{row['english_name'].lower().replace(' ', '_')}.json"
+				if filename.exists():
+					with open(filename, 'r', encoding='utf-8') as f:
+						tractate_json = json.load(f)
+					text_data = tractate_json.get('text', [])
+					cleaned_text = [page for page in text_data if page and isinstance(page, list)]
+					bavli_data.append(cleaned_text)
+				else:
+					bavli_data.append([])
 			else:
 				bavli_data.append([])
 		bavli_data = cls.fix_bavli(bavli_data)
@@ -198,7 +200,7 @@ class Source:
 			for page in tractate:
 				for i, verse_text in enumerate(page):
 					page[i] = cls.clean_bavli_text(verse_text)
-		with open(cls.OUTPUT_DIR / 'bavli.json', 'w', encoding='utf-8') as f:
+		with open(JSON_FOLDER / 'bavli.json', 'w', encoding='utf-8') as f:
 			json.dump(bavli_data, f, ensure_ascii=False, indent=2)
 		bavli_count = sum(1 for tractate in bavli_data if tractate)
 		total_pages = sum(len(tractate) for tractate in bavli_data)
@@ -208,24 +210,27 @@ class Source:
 	@classmethod
 	def build_yerushalmi(cls):
 		print("📖 Converting Talmud Yerushalmi (chapter-based)...")
-		tractates_df = pd.read_csv(CSV_DIR / "tractates.csv")
+		tractates_df = read_csv_rows(CSV_FOLDER / "tractates.csv")
 		yerushalmi_data = []
-		for _, row in tractates_df.iterrows():
-			filename = cls.CACHE_DIR / f"yerushalmi_{row['english_name'].lower().replace(' ', '_')}.json"
-			if filename.exists() and row['yerushalmi'] == 1:
-				with open(filename, 'r', encoding='utf-8') as f:
-					tractate_json = json.load(f)
-				text_data = tractate_json.get('text', [])
-				cleaned_text = []
-				for chapter in text_data:
-					if chapter and isinstance(chapter, list):
-						cleaned_halakhot = [halakha for halakha in chapter if halakha]
-						if cleaned_halakhot:
-							cleaned_text.append(cleaned_halakhot)
-				yerushalmi_data.append(cleaned_text)
+		for row in tractates_df:
+			if row.get('yerushalmi') == '1':
+				filename = DOWNLOAD_FOLDER / f"yerushalmi_{row['english_name'].lower().replace(' ', '_')}.json"
+				if filename.exists():
+					with open(filename, 'r', encoding='utf-8') as f:
+						tractate_json = json.load(f)
+					text_data = tractate_json.get('text', [])
+					cleaned_text = []
+					for chapter in text_data:
+						if chapter and isinstance(chapter, list):
+							cleaned_halakhot = [halakha for halakha in chapter if halakha]
+							if cleaned_halakhot:
+								cleaned_text.append(cleaned_halakhot)
+					yerushalmi_data.append(cleaned_text)
+				else:
+					yerushalmi_data.append([])
 			else:
 				yerushalmi_data.append([])
-		with open(cls.OUTPUT_DIR / 'yerushalmi.json', 'w', encoding='utf-8') as f:
+		with open(JSON_FOLDER / 'yerushalmi.json', 'w', encoding='utf-8') as f:
 			json.dump(yerushalmi_data, f, ensure_ascii=False, indent=2)
 		yerushalmi_count = sum(1 for tractate in yerushalmi_data if tractate)
 		total_chapters = sum(len(tractate) for tractate in yerushalmi_data)
@@ -236,7 +241,7 @@ class Source:
 	@classmethod
 	def build_zohar(cls):
 		print("🔮 Converting Zohar...")
-		zohar_file = cls.CACHE_DIR / "zohar_zohar.json"
+		zohar_file = DOWNLOAD_FOLDER / "zohar_zohar.json"
 		if zohar_file.exists():
 			with open(zohar_file, 'r', encoding='utf-8') as f:
 				zohar_data = json.load(f)
@@ -254,7 +259,7 @@ class Source:
 					zohar_converted.append(episode_list)  # ← ONE section for ALL Addenda
 				elif isinstance(episodes, list):
 					zohar_converted.append(episodes)
-			with open(cls.OUTPUT_DIR / 'zohar.json', 'w', encoding='utf-8') as f:
+			with open(JSON_FOLDER / 'zohar.json', 'w', encoding='utf-8') as f:
 				json.dump(zohar_converted, f, ensure_ascii=False, indent=2)
 		else:
 			zohar_converted = []
@@ -265,7 +270,7 @@ class Source:
 	@classmethod
 	def build_zohar_chadash(cls):
 		print("🔮 Converting Zohar Chadash...")
-		zohar_chadash_file = cls.CACHE_DIR / "zohar_zohar_chadash.json"
+		zohar_chadash_file = DOWNLOAD_FOLDER / "zohar_zohar_chadash.json"
 		if zohar_chadash_file.exists():
 			with open(zohar_chadash_file, 'r', encoding='utf-8') as f:
 				zohar_chadash_data = json.load(f)
@@ -276,7 +281,7 @@ class Source:
 					zohar_chadash_converted.append(verses)
 				else:
 					zohar_chadash_converted.append([verses])
-			with open(cls.OUTPUT_DIR / 'zohar-chadash.json', 'w', encoding='utf-8') as f:
+			with open(JSON_FOLDER / 'zohar-chadash.json', 'w', encoding='utf-8') as f:
 				json.dump(zohar_chadash_converted, f, ensure_ascii=False, indent=2)
 		else:
 			zohar_chadash_converted = []
@@ -287,13 +292,13 @@ class Source:
 	@classmethod
 	def build_tikkunei_zohar(cls):
 		print("🔮 Converting Tikkunei Zohar...")
-		tikkunei_file = cls.CACHE_DIR / "zohar_tikkunei_zohar.json"
+		tikkunei_file = DOWNLOAD_FOLDER / "zohar_tikkunei_zohar.json"
 		if tikkunei_file.exists():
 			with open(tikkunei_file, 'r', encoding='utf-8') as f:
 				tikkunei_data = json.load(f)
 			tikkunei_text = tikkunei_data.get('text', [])
 			tikkunei_converted = [chapter for chapter in tikkunei_text if chapter]
-			with open(cls.OUTPUT_DIR / 'zohar-tikkunim.json', 'w', encoding='utf-8') as f:
+			with open(JSON_FOLDER / 'zohar-tikkunim.json', 'w', encoding='utf-8') as f:
 				json.dump(tikkunei_converted, f, ensure_ascii=False, indent=2)
 		else:
 			tikkunei_converted = []
@@ -304,23 +309,23 @@ class Source:
 	@classmethod
 	def verify(cls):
 		print("\n🔍 Verifying conversions...")
-		books_df = pd.read_csv(CSV_DIR / "books.csv")
-		with open(cls.OUTPUT_DIR / 'bible.json', 'r', encoding='utf-8') as f:
+		books_df = read_csv_rows(CSV_FOLDER / "books.csv")
+		with open(JSON_FOLDER / 'bible.json', 'r', encoding='utf-8') as f:
 			bible_data = json.load(f)
 		assert len(bible_data) == len(books_df), f"Bible book count mismatch: {len(bible_data)} vs {len(books_df)}"
 		print("✅ Bible books verified")
-		tractates_df = pd.read_csv(CSV_DIR / "tractates.csv")
-		with open(cls.OUTPUT_DIR / 'mishnah.json', 'r', encoding='utf-8') as f:
+		tractates_df = read_csv_rows(CSV_FOLDER / "tractates.csv")
+		with open(JSON_FOLDER / 'mishnah.json', 'r', encoding='utf-8') as f:
 			mishnah_data = json.load(f)
 		assert len(mishnah_data) == len(tractates_df), f"Mishnah tractate count mismatch"
 		print("✅ Mishnah tractates verified")
-		zohar_chapters_df = pd.read_csv(CSV_DIR / "zohar-chapters.csv")
-		with open(cls.OUTPUT_DIR / 'zohar.json', 'r', encoding='utf-8') as f:
+		zohar_chapters_df = read_csv_rows(CSV_FOLDER / "zohar-chapters.csv")
+		with open(JSON_FOLDER / 'zohar.json', 'r', encoding='utf-8') as f:
 			zohar_data = json.load(f)
 		assert len(zohar_data) == len(zohar_chapters_df), f"Zohar section count mismatch"
 		print("✅ Zohar sections verified")
-		zohar_chadash_chapters_df = pd.read_csv(CSV_DIR / "zohar-chadash-chapters.csv")
-		with open(cls.OUTPUT_DIR / 'zohar-chadash.json', 'r', encoding='utf-8') as f:
+		zohar_chadash_chapters_df = read_csv_rows(CSV_FOLDER / "zohar-chadash-chapters.csv")
+		with open(JSON_FOLDER / 'zohar-chadash.json', 'r', encoding='utf-8') as f:
 			zohar_chadash_data = json.load(f)
 		assert len(zohar_chadash_data) == len(zohar_chadash_chapters_df), f"Zohar Chadash section count mismatch"
 		print("✅ Zohar Chadash sections verified")
@@ -377,25 +382,17 @@ class Source:
 def main():
 	parser = argparse.ArgumentParser(
 		description="Build the Scriptures JSON database from Sefaria sources.")
-	parser.add_argument("folder", nargs="?", type=Path, help="output folder")
-	parser.add_argument("--system", action="store_true",
-		help=f"write to {SYSTEM_OUTPUT_DIR} instead of a folder")
-	parser.add_argument("--clear-cache", action="store_true",
-		help=f"delete {CACHE_DIR} and exit")
+	parser.add_argument(
+		"command",
+		choices=["download", "build"],
+		help="run 'download' to fetch source JSONs into the repo‑download folder, "
+			 "or 'build' to convert them into the repo‑json folder.")
 	args = parser.parse_args()
 
-	if args.clear_cache:
-		if args.folder or args.system:
-			parser.error("--clear-cache cannot be combined with a folder or --system")
-		shutil.rmtree(CACHE_DIR, ignore_errors=True)
-		print(f"🗑️  Removed {CACHE_DIR}")
-		return
-
-	if bool(args.folder) == bool(args.system):
-		parser.error("specify a folder or --system, not both/neither")
-
-	Source.OUTPUT_DIR = SYSTEM_OUTPUT_DIR if args.system else args.folder
-	Source.build()
+	if args.command == "download":
+		Source.download()
+	elif args.command == "build":
+		Source.build()
 
 if __name__ == "__main__":
 	main()

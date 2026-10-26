@@ -1,6 +1,6 @@
 import json
 import csv
-import hebrew
+import Hebrew
 
 from pathlib import Path
 DATA_DIR = Path(__file__).resolve().parent
@@ -19,11 +19,11 @@ class TalmudYerushalmiVerse:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"TalmudYerushalmiVerse({self.paragraph.chapter.tractate.number}:{self.paragraph.chapter.number}:{self.paragraph.number}:{self.number})"
@@ -43,11 +43,11 @@ class TalmudYerushalmiParagraph:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"TalmudYerushalmiParagraph({self.chapter.tractate.number}:{self.chapter.number}:{self.number})"
@@ -67,11 +67,11 @@ class TalmudYerushalmiChapter:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"TalmudYerushalmiChapter({self.tractate.number}:{self.number})"
@@ -98,11 +98,11 @@ class TalmudYerushalmiTractate:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"TalmudYerushalmiTractate({self.english_name})"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from flask import Flask, send_file
 from jinja2 import Template
-from scriptures import Scriptures
+from Scriptures import Scriptures
 
 app = Flask(__name__)
 s = Scriptures()
@@ -323,11 +323,11 @@ def tikkunei_zohar_chapter(chapter):
 
 @app.route('/@@/<path:filename>')
 def serve_font(filename):
-	return send_file(f"fonts/{filename}")
+	return send_file(f"../Fonts/{filename}")
 
 @app.route('/@@/styles.css')
 def serve_styles():
-	return send_file(f"reubeninstitute/styles.css")
+	return send_file(f"../Brand/styles.css")
 
 @app.route('/<path:filename>')
 def serve_file(filename):

@@ -1,6 +1,6 @@
 import json
 import csv
-import hebrew
+import Hebrew
 from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent
@@ -19,11 +19,11 @@ class TalmudBavliVerse:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"TalmudBavliVerse({self.page.tractate.number}:{self.page.number}:{self.number})"
@@ -43,11 +43,11 @@ class TalmudBavliPage:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"TalmudBavliPage({self.tractate.number}:{self.number})"
@@ -74,11 +74,11 @@ class TalmudBavliTractate:
 
 	@property
 	def hebrew_number(self):
-		return hebrew.int_to_gematria(self.number)
+		return Hebrew.int_to_gematria(self.number)
 
 	@property
 	def hebrew_fancy_number(self):
-		return hebrew.int_to_gematria(self.number, gershayim=True)
+		return Hebrew.int_to_gematria(self.number, gershayim=True)
 
 	def __repr__(self):
 		return f"TalmudBavliTractate({self.english_name})"
